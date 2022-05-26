@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.example.hmsapi.dtos.AddProduct;
 import com.example.hmsapi.exceptions.NotFoundException;
+import com.example.hmsapi.models.Category;
 import com.example.hmsapi.models.Product;
 import com.example.hmsapi.models.User;
+import com.example.hmsapi.repositories.CategoryRepository;
 import com.example.hmsapi.repositories.ProductRepository;
 import com.example.hmsapi.repositories.UserRepository;
 import com.example.hmsapi.services.ProductService;
@@ -26,6 +28,8 @@ public class ProductServiceImplementation implements ProductService {
 	private ProductRepository productRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	@Autowired
     private IAuthenticationFacade authenticationFacade;
@@ -43,8 +47,9 @@ public class ProductServiceImplementation implements ProductService {
 		newProduct.setName(product.getName());
 		newProduct.setPrice(product.getPrice());  
 		newProduct.setCreatedby(user);
+		Category cat = categoryRepository.findById(product.getCategory()).orElseThrow(()-> new NotFoundException("No category found."));
+		newProduct.setCategory(cat);
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		
 		Date now = new Date();
 		newProduct.setCreatedDate(now);
 		newProduct.setUpdatedDate(now);
@@ -80,6 +85,12 @@ public class ProductServiceImplementation implements ProductService {
 	public List<Product> getProducst() {
 		// TODO Auto-generated method stub
 		return productRepository.findAll();
+	}
+
+	@Override
+	public List<Product> getByCategory(String category) {
+		// TODO Auto-generated method stub
+		return productRepository.findByCategory(category);
 	}
 
 }

@@ -95,4 +95,12 @@ public class ProductController {
 		return new ResponseEntity<>(response,HttpStatus.NO_CONTENT);
 	}
 	
+	@GetMapping("/category/{id}")
+	public ResponseEntity<?> getByCategory(@PathVariable String id){
+		Map<String, List<Product>> response= new HashMap<>();
+		List<Product> products = productService.getByCategory(id);
+		response.put("data", products);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
 }
